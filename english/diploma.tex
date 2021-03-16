@@ -1,0 +1,83 @@
+% В этом шаблоне используется класс spbau-diploma. Его можно найти и, если требуется, 
+% поправить в файле spbau-diploma.cls
+\documentclass{spbau-diploma}
+\begin{document}
+% Год, город, название университета и факультета предопределены,
+% но можно и поменять.
+% Если англоязычная титульная страница не нужна, то ее можно просто удалить.
+\filltitle{en}{
+    chair              = {DEPARTMENT OF COMPUTER SCIENCE},
+    title              = {Designing Implicits for 1ML Language},
+    author             = {Alexey Trilis},
+    supervisorPosition = {PhD in Physico-Mathematical Sciences},
+    supervisor         = {Daniil Berezun},
+    reviewerPosition   = {assistant},
+    reviewer           = {Alexander Privalov},
+    chairHeadPosition  = {professor},
+    chairHead          = {Alexander Omelchenko},
+    university         = {NATIONAL RESEARCH UNIVERSITY HIGHER SCHOOL OF ECONOMICS, ST. PETERSBURG},
+    type               = {proposal},
+    city               = {ST. PETERSBURG},
+    year               = {2021},
+}
+\maketitle
+\tableofcontents
+% У введения нет номера главы
+\section*{}
+
+(* ABSTRACT *)
+
+\textit{Keywords}: implicit parameters, implicit modules, ML modules, type classes, generic programming, 1ML.
+
+\section{Introduction}
+
+\textbf{Background.}~~\textit{Ad hoc polymorphism} is a programming language feature that allows functions with the same name to have different semantics depending on argument types. Simple but important examples include using operator \texttt{+} to add up both integers and floating-point numbers, and using function \texttt{print} to print values of different types.
+
+Given its apparent usability, ad hoc polymorphism is implemented in many languages. Two of most notable general ideas about designing it are \textit{constrained polymorphism} and \textit{implicit parameters}. Constrained polymorphism makes possible to add constraints on argument behavior to polymorphic functions. Languages where constrained polymorphism can be found include Haskell and various object-oriented languages with bounded generics, such as Java or C\#. Implicit parameters are the technique of inferring some of function parameters based on the context of its usage. This approach was popularized mainly by Scala.
+
+ML can be characterized as language with powerful type inference and advanced module system. Along with its dialects, it enjoys fair popularity in certain domains. Aside from academia use, one of the most popular ML dialects, OCaml, found extensive industry use in such domains as compiler development, static program analysis, automatic theorem proving, financial systems and web development. 
+
+Despite all the positive aspects of ML, it does not currently support ad hoc polymorphism. Consequently, OCaml standard library contains separate adding operators: \texttt{+} for integers and \texttt{+.} for floating-point numbers, and multiple functions for printing, such as \texttt{print\_int}, \texttt{print\_string}, etc. Coding in OCaml requires the programmer to explicitly choose between these options. Lack of polymorphic \texttt{print} function makes printing polymorphic parameters impossible. Overall, this is undesirable verbosity for ML, given that one of its main strengths is parametric polymorphism with the optionality of most of explicit type annotations.
+
+Another common point of criticism of ML is its separation into two languages: core language and module language. Historically, core language was designed first, and more powerful module language was designed later. As a result, modules in ML are not truly first-class citizens. 1ML \cite{1ml} is a proposed redesign of ML which acts as a solution to this problem: in 1ML, core and module language are unified.
+
+\textbf{Problem statement.}~~Our main goal is to design and implement implicit modules for 1ML language. We choose 1ML because on the one hand, it is more minimal and uniform than traditional ML dialects, and on the other hand, it is more expressive and concise. Treatment of modules in 1ML makes several parts of designing implicit modules easier, so we plan to improve some results of previous proposal for OCaml \cite{white}. Special attention should be made to improve completeness of implicit search and module unification algorithm, which are weak points of previous proposal. 
+
+\textbf{Structure of the paper.}~~The paper is structured as follows:
+\begin{itemize}
+\item section 2 explains motivation behind creation of 1ML and gives an overview of approaches to ad hoc polymorphism in different languages, with focus on ML family;
+\item section 3 describes our approach to design implicit modules;
+\item section 4 presents the anticipated results of this research.
+\end{itemize}
+
+\section{Related Work}
+
+\textbf{ML modules and 1ML}.~~ML module system was designed using dependent type machinery \cite{dependent_types}. While powerful, it is quite verbose and sometimes difficult to integrate with core language. The second-class status of modules in ML has some practical effects, for example, it results in an inability to express something as trivial as dynamically choosing a module. Several works have been made to address this practical problem, most notably \textit{packaged modules}, described firstly in \cite{packaged} and then implemented for most ML dialects, including OCaml.
+
+Recent studies demonstrated that dependent types are not necessary, because the entire ML module system can be expressed in System F\textsubscript{$\omega$} \cite{fing}. As a continuation of these studies and as a solution to known issues of ML modules, language 1ML \cite{1ml} was created. In this language, each language construction can be viewed as a module and elaborated into System F\textsubscript{$\omega$}, which eliminates both the need for dependent type theory and the module-core stratification. A prototype interpreter is provided by the author, which will serve as the basis for the practical part of this work.
+
+\textbf{Ad hoc polymorphism}.~~The classic formalized approach to ad hoc polymorphism is based on \textit{type classes}. They were introduced in Haskell \cite{adhoc} and then replicated in several other languages, such as Agda and Rust. 
+
+Type classes require \textit{canonicity}: each type class cannot have multiple instances for one type. Consequently, type classes are not a possible choice for all languages. As noted in \cite{white}, in OCaml we cannot check canonicity in the general case, because canonicity violations can be hidden behind modular abstractions. The same reasoning can be applied to 1ML as well. This makes type classes in the сlassical sense not a viable choice for our problem.
+
+\textit{Implicit parameters} and \textit{implicit conversions}, collectively referred to as \textit{implicits}, were introduced in Scala \cite{implicits} as a lightweight replacement for type classes in an object-oriented language. Unlike type classes, which can be inferred from function body, implicits need to be declared in function definition. On the other side, implicits do not require canonicity, relying on weaker property of \textit{non-ambiguity}.
+
+\textbf{Approaches for ML/OCaml}.~~Dreyer et al. \cite{ml_typeclasses} described \textit{modular type classes}, offering type class functionality in ML. However, to make them work without canonicity, the authors impose rather strong restrictions. 
+
+Another attempt to design implicits in OCaml was made by White et al. \cite{white} and serves as the main inspiration for this work. In general, the authors follow Scala approach. Their proposal only covers implicit parameters, not implicit conversions, arguing that the latter unnecessarily complicates reasoning about code. Another difference is ambiguity handling: in Scala, 
+
+Although the work by White et al. gives an informal description and even presents a minimal prototype, it is far from complete and OCaml (as of version 4.12) still lacks implicits. Of course, one of the reasons for this delay is the great scope of this project, as designing and implementing this feature in an already mature language like OCaml requires extensive work, both theoretical and practical. However, the authors point out some particular difficulties they encounter.
+
+Firstly, implementing implicit modules requires unification at the module level, which OCaml lacks. Implementing this unification poses a significant challenge. In 1ML this part is much easier because of its non-dependent typing and first-class module status. 
+
+Secondly, the order of resolving implicit modules is important: resolving them in incorrect order can lead to ambiguity errors. To achieve predictability of type checking in prototype, authors give some weak guarantees on resolve order and fail if compilation succeeded only because of an ordering not ensured by these guarantees. They argue that it is common practice in OCaml for other order-dependent features. We, however, want to explore solutions that improve the completeness of implicit search.
+
+\section{Method}
+
+\section{Results Anticipated}
+
+\section*{Conclusion}
+
+\bibliographystyle{IEEEtran}
+\bibliography{diploma.bib}
+\end{document}
