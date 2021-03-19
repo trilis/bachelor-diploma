@@ -130,3 +130,39 @@ pages="336--350",
 abstract="Standard ML is a statically typed programming language that is suited for the construction of both small and large programs. ``Programming in the small'' is captured by Standard ML's Core language. ``Programming in the large'' is captured by Standard ML's Modules language that provides constructs for organising related Core language definitions into self-contained modules with descriptive interfaces. While the Core is used to express details of algorithms and data structures, Modules is used to express the overall architecture of a software system. The Modules and Core languages are stratified in the sense that modules may not be manipulated as ordinary values of the Core. This is a limitation, since it means that the architecture of a program cannot be reconfigured according to run-time demands. We propose a novel extension of the language that allows modules to be manipulated as first-class values of the Core language. The extension greatly extends the expressive power of the language and has been shown to be compatible with both Core type inference and a separate extension to higher-order modules.",
 isbn="978-3-540-46425-9"
 }
+
+@inproceedings{agda,
+author = {Devriese, Dominique and Piessens, Frank},
+title = {On the Bright Side of Type Classes: Instance Arguments in {Agda}},
+year = {2011},
+isbn = {9781450308656},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/2034773.2034796},
+doi = {10.1145/2034773.2034796},
+abstract = {We present instance arguments: an alternative to type classes and related features in the dependently typed, purely functional programming language/proof assistant Agda. They are a new, general type of function arguments, resolved from call-site scope in a type-directed way. The mechanism is inspired by both Scala's implicits and Agda's existing implicit arguments, but differs from both in important ways. Our mechanism is designed and implemented for Agda, but our design choices can be applied to other programming languages as well.Like Scala's implicits, we do not provide a separate structure for type classes and their instances, but instead rely on Agda's standard dependently typed records, so that standard language mechanisms provide features that are missing or expensive in other proposals. Like Scala, we support the equivalent of local instances. Unlike Scala, functions taking our new arguments are first-class citizens and can be abstracted over and manipulated in standard ways. Compared to other proposals, we avoid the pitfall of introducing a separate type-level computational model through the instance search mechanism. All values in scope are automatically candidates for instance resolution. A final novelty of our approach is that existing Agda libraries using records gain the benefits of type classes without any modification.We discuss our implementation in Agda (to be part of Agda 2.2.12) and we use monads as an example to show how it allows existing concepts in the Agda standard library to be used in a similar way as corresponding Haskell code using type classes. We also demonstrate and discuss equivalents and alternatives to some advanced type class-related patterns from the literature and some new patterns specific to our system.},
+booktitle = {Proceedings of the 16th ACM SIGPLAN International Conference on Functional Programming},
+pages = {143–155},
+numpages = {13},
+keywords = {agda, type classes, ad hoc polymorphism, instance arguments},
+location = {Tokyo, Japan},
+series = {ICFP '11}
+}
+
+@inproceedings{rust,
+author = {Matsakis, Nicholas D. and Klock, Felix S.},
+title = {The {Rust} Language},
+year = {2014},
+isbn = {9781450332170},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/2663171.2663188},
+doi = {10.1145/2663171.2663188},
+abstract = {Rust is a new programming language for developing reliable and efficient systems. It is designed to support concurrency and parallelism in building applications and libraries that take full advantage of modern hardware. Rust's static type system is safe1 and expressive and provides strong guarantees about isolation, concurrency, and memory safety.Rust also offers a clear performance model, making it easier to predict and reason about program efficiency. One important way it accomplishes this is by allowing fine-grained control over memory representations, with direct support for stack allocation and contiguous record storage. The language balances such controls with the absolute requirement for safety: Rust's type system and runtime guarantee the absence of data races, buffer overflows, stack overflows, and accesses to uninitialized or deallocated memory.},
+booktitle = {Proceedings of the 2014 ACM SIGAda Annual Conference on High Integrity Language Technology},
+pages = {103–104},
+numpages = {2},
+keywords = {rust, affine type systems, memory management, systems programming},
+location = {Portland, Oregon, USA},
+series = {HILT '14}
+}
