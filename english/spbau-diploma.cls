@@ -1,48 +1,11 @@
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesClass{spbau-diploma}[2015/05/22 SPbAU LaTeX diploma class]
-\def\my@fontsize{12pt}\def\my@baseclass{article}\def\my@title12pt{}\def\my@body14pt{}
-
-% Если используется опция 14pt то нужно несколько хаков
-\DeclareOption{14pt}{
-  \def\ignore#1{}
-  % во-первых, класс наследуется от extarticle
-  \def\my@fontsize{14pt}
-  \def\my@baseclass{extarticle}
-  
-  % во-вторых, титульный лист должен набираться так, как будто
-  % используется шрифт 12pt - иначе он выглядит совсем конским
-  % Для этого мы явно загружаем size12.clo, но так как он на такое не рассчитан,
-  % и использует \newcommand для определения всяких \small и \Large
-  % то у нас \newcommand временно превращается в \renewcommand
-  \let\orignewcommand\newcommand
-  \let\origNeedsTeXFormat\NeedsTeXFormat
-  \def\my@title12pt{
-    \let\newcommand\renewcommand
-    \makeatletter
-    \input{size12.clo}%
-    \makeatother  
-    \let\newcommand\orignewcommand
-  }
-  % в-третьих, после того как титульный лист сгенерирован, нужно снова вернуться
-  % к базовому шрифту 14pt. Применяется такой же хак: загрузи size14.clo 
-  % временно переопределив \newcommand => \renewcommand
-  \def\my@body14pt{
-    % отдельное внимание подавлению команды \NeedsTeXFormat, которая требует
-    % чтобы код size14.clo выполнялся в преамбуле (а тут он уже внутри документа)
-    \let\NeedsTeXFormat\ignore
-    \let\newcommand\renewcommand
-    \makeatletter
-    \input{size14.clo}%
-    \makeatother  
-    \let\newcommand\orignewcommand
-    \let\NeedsTeXFormat\origNeedsTeXFormat
-  }
-}
+\def\my@fontsize{12pt}\def\my@baseclass{article}\def\my@title12pt{}\def\my@body12pt{}
 \ProcessOptions\relax
 \LoadClass[a4paper,\my@fontsize]{\my@baseclass}
 
 \usepackage{fontspec}
-\setmainfont[Mapping=tex-text]{CMU Serif}
+\setmainfont[Mapping=tex-text]{TeX Gyre Termes}
 \setsansfont{CMU Sans Serif}               
 \setmonofont{CMU Typewriter Text}
 
@@ -279,8 +242,8 @@
 \end{spacing}
 \setcounter{page}{\value{titlepages}}
 % restore preamble's geometry
-\my@body14pt
-\newgeometry{a4paper,top=20mm,bottom=20mm,left=30mm,right=15mm,nohead,includeheadfoot}
+\my@body12pt
+\newgeometry{a4paper,top=25mm,bottom=25mm,left=25mm,right=25mm,nohead,includeheadfoot}
 }
 
 %% Каждая глава начинается с новой страницы, введение и заключение не
@@ -302,3 +265,11 @@
 
 \let\savenumberline\numberline
 \def\numberline#1{\savenumberline{#1.}}
+
+\usepackage{apacite}
+\usepackage{natbib}
+
+\raggedright
+
+\setlength\parindent{12.5mm}
+

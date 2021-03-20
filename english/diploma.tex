@@ -21,23 +21,23 @@
 % У введения нет номера главы
 \section*{}
 
-(* ABSTRACT *)
+Ad-hoc polymorphism proved to be a highly desirable feature for any language. Lack of this feature for languages in the \textsc{ML} family can be considered a significant problem. In this work, we present the solution to this problem within the framework of experimental language \textsc{1ML}. This language offers a minimal and uniform look on \textsc{ML} modules, uniting them with the core language. We extend \textsc{1ML} with \textit{implicit modules}, offering \textsc{Scala}-like ad-hoc polymorphism. We compare our approach with a recent proposal of modular implicits for \textsc{OCaml} and claim to improve type checking completeness, using minimality and certain design choices of \textsc{1ML}.
 
-\textit{Keywords}: implicit parameters, implicit modules, \textsc{ML} modules, type classes, generic programming, \textsc{1ML}.
+\textit{Keywords}: implicit parameters, implicit modules, \textsc{ML} modules, type classes, ad-hoc polymorphism, \textsc{1ML}.
 
 \section{Introduction}
 
 \textbf{Background.}~~\textit{Ad hoc polymorphism} is a programming language feature that allows functions with the same name to have different semantics depending on argument types. Simple but important examples include using the operator \texttt{+} to add up both integers and floating-point numbers and using the function \texttt{print} to print values of different types.
 
-Given its apparent usability, ad hoc polymorphism is implemented in many languages. Two of the most notable general ideas about designing it are \textit{constrained polymorphism} and \textit{implicit parameters}. Constrained polymorphism makes it possible to add constraints on argument behavior to polymorphic functions. Languages where constrained polymorphism can be found include Haskell and various object-oriented languages with bounded generics, such as \textsc{Java} or \textsc{C\#}. Implicit parameters are the technique of inferring some function parameters based on the context of their usage. This approach was popularized mainly by \textsc{Scala}.
+Given its apparent usability, ad hoc polymorphism is implemented in many languages. Two of the most notable general ideas about designing it are \textit{constrained polymorphism} and \textit{implicit parameters}. Constrained polymorphism makes it possible to add constraints on argument behavior to polymorphic functions. Languages where constrained polymorphism can be found include \textsc{Haskell} and various object-oriented languages with bounded generics, such as \textsc{Java} or \textsc{C\#}. Implicit parameters are the technique of inferring some function parameters based on the context of their usage. This approach was popularized mainly by \textsc{Scala}.
 
 \textsc{ML} can be characterized as the language with powerful type inference and an advanced module system. Along with its dialects, it enjoys fair popularity in certain domains. Aside from use in academia, one of the most popular \textsc{ML} dialects, \textsc{OCaml}, found extensive industry use in such domains as compiler development, static program analysis, automatic theorem proving, financial systems, and web development. 
 
 Despite all the positive aspects of \textsc{ML}, it does not currently support ad hoc polymorphism. Consequently, \textsc{OCaml} standard library contains separate adding operators: \texttt{+} for integers and \texttt{+.} for floating-point numbers, and multiple functions for printing, such as \texttt{print\_int} or \texttt{print\_string}. Coding in \textsc{OCaml} requires the programmer to choose between these options explicitly. Lack of polymorphic \texttt{print} function makes printing polymorphic parameters impossible. Overall, this is undesirable verbosity for \textsc{ML}, given that one of its main strengths is parametric polymorphism with the optionality of most of explicit type annotations.
 
-Another common point of criticism of \textsc{ML} is its separation into two languages: core language and module language. Historically, core language was designed first, and more powerful module language was designed later. As a result, modules in \textsc{ML} are not truly first-class citizens. \textsc{1ML} \cite{1ml} is a proposed redesign of ML, which acts as a solution to this problem: in 1ML, core and module language are unified.
+Another common point of criticism of \textsc{ML} is its separation into two languages: core language and module language. Historically, core language was designed first, and more powerful module language was designed later. As a result, modules in \textsc{ML} are not truly first-class citizens. \textsc{1ML} \citep{1ml} is a proposed redesign of ML, which acts as a solution to this problem: in 1ML, core and module language are unified.
 
-\textbf{Problem statement.}~~Our main goal is to design and implement implicit modules for the \textsc{1ML} language. We choose \textsc{1ML} because, on the one hand, it is more minimal and uniform than traditional \textsc{ML} dialects, and on the other hand, it is more expressive and concise. Treatment of modules in \textsc{1ML} makes several parts of designing implicit modules easier, so we plan to improve some results of the previous proposal for \textsc{OCaml} \cite{white}. Special attention should be made to improve the completeness of implicit search and module unification algorithm, which are weak points of the previous proposal. To evaluate our result, we compare it with the previous proposal using a test suite consisting of various implicit module usecases.
+\textbf{Problem statement.}~~Our main goal is to design and implement implicit modules for the \textsc{1ML} language. We choose \textsc{1ML} because, on the one hand, it is more minimal and uniform than traditional \textsc{ML} dialects, and on the other hand, it is more expressive and concise \citep{1ml}. Treatment of modules in \textsc{1ML} makes several parts of designing implicit modules easier, so we plan to improve some results of the previous proposal for \textsc{OCaml} \citep{white}. Special attention should be made to improve the completeness of implicit search and module unification algorithm, which are weak points of the previous proposal. To evaluate our result, we compare it with the previous proposal using a test suite consisting of various implicit module usecases.
 
 \textbf{Structure of the paper.}~~The paper is structured as follows:
 \begin{itemize}
@@ -46,21 +46,21 @@ Another common point of criticism of \textsc{ML} is its separation into two lang
 \item section 4 presents the anticipated results of this research.
 \end{itemize}
 
-\section{Related Work}
+\section{Literature Review}
 
-\textbf{\textsc{ML} modules and \textsc{1ML}}.~~\textsc{ML} module system was designed using dependent type machinery \cite{dependent_types}. While powerful, it is quite verbose and sometimes difficult to integrate with core language. The second-class status of modules in \textsc{ML} has some practical effects, for example, it results in an inability to express something as trivial as dynamically choosing a module. Several works have been made to address this practical problem, most notably \textit{packaged modules}, described firstly in \cite{packaged} and then implemented for most \textsc{ML} dialects, including \textsc{OCaml}.
+\textbf{\textsc{ML} modules and \textsc{1ML}}.~~\textsc{ML} module system was designed using dependent type machinery \citep{dependent_types}. While powerful, it is quite verbose and sometimes difficult to integrate with core language. The second-class status of modules in \textsc{ML} has some practical effects, for example, it results in an inability to express something as trivial as dynamically choosing a module. Several works have been made to address this practical problem, most notably \textit{packaged modules}, described firstly by Russo (\citeyear{packaged}) and then implemented for most \textsc{ML} dialects, including \textsc{OCaml}.
 
-Recent studies demonstrated that dependent types are not necessary, because the entire \textsc{ML} module system can be expressed in \textsc{System F\textsubscript{$\omega$}} \cite{fing}. As a continuation of these studies and as a solution to known issues of \textsc{ML} modules, language \textsc{1ML} \cite{1ml} was created. In this language, each language construction can be viewed as a module and elaborated into \textsc{System F\textsubscript{$\omega$}}, which eliminates both the need for dependent type theory and the module-core stratification. A prototype interpreter is provided by the author, which will serve as the basis for the practical part of this work.
+Recent studies demonstrated that dependent types are not necessary, because the entire \textsc{ML} module system can be expressed in \textsc{System F\textsubscript{$\omega$}} \citep{fing}. As a continuation of these studies and as a solution to known issues of \textsc{ML} modules, language \textsc{1ML} \citep{1ml} was created. In this language, each language construction can be viewed as a module and elaborated into \textsc{System F\textsubscript{$\omega$}}, which eliminates both the need for dependent type theory and the module-core stratification. A prototype interpreter is provided by the author, which will serve as the basis for the practical part of this work.
 
-\textbf{Ad hoc polymorphism}.~~The classic formalized approach to ad hoc polymorphism is based on \textit{type classes}. They were introduced in \textsc{Haskell} \cite{adhoc} and then replicated in several other languages, such as \textsc{Agda} \cite{agda} and \textsc{Rust} \cite{rust}. 
+\textbf{Ad hoc polymorphism}.~~The classic formalized approach to ad hoc polymorphism is based on \textit{type classes}. They were introduced in \textsc{Haskell} \citep{adhoc} and then replicated in several other languages, such as \textsc{Agda} \citep{agda} and \textsc{Rust} \citep{rust}. 
 
-Type classes require \textit{canonicity}: each type class cannot have multiple instances for one type. Consequently, type classes are not a possible choice for all languages. As noted in \cite{white}, in \textsc{OCaml} we cannot check canonicity in the general case, because canonicity violations can be hidden behind modular abstractions. The same reasoning can be applied to \textsc{1ML} as well. This makes type classes in the сlassical sense not a viable choice for our problem.
+Type classes require \textit{canonicity}: each type class cannot have multiple instances for one type. Consequently, type classes are not a possible choice for all languages. White et al. (\citeyear{white}) noted that in \textsc{OCaml}, we could not check canonicity in the general case, because canonicity violations can be hidden behind modular abstractions. The same reasoning can be applied to \textsc{1ML} as well. This makes type classes in the classical sense not a viable choice for our problem.
 
-\textit{Implicit parameters} and \textit{implicit conversions}, collectively referred to as \textit{implicits}, were introduced in \textsc{Scala} \cite{implicits} as a lightweight replacement for type classes in an object-oriented language. Unlike type classes, which can be inferred from function body, implicits need to be declared in function definition. On the other side, implicits do not require canonicity, relying on weaker property of \textit{non-ambiguity}.
+\textit{Implicit parameters} and \textit{implicit conversions}, collectively referred to as \textit{implicits}, were introduced in \textsc{Scala} \citep{implicits} as a lightweight replacement for type classes in an object-oriented language. Unlike type classes, which can be inferred from function body, implicits need to be declared in function definition. On the other side, implicits do not require canonicity, relying on weaker property of \textit{non-ambiguity}.
 
-\textbf{Approaches for \textsc{ML}/\textsc{OCaml}}.~~Dreyer et al. \cite{ml_typeclasses} described \textit{modular type classes}, offering type class functionality in \textsc{ML}. However, to make them work without canonicity, the authors impose rather strong restrictions. 
+\textbf{Approaches for \textsc{ML}/\textsc{OCaml}}.~~Dreyer et al. (\citeyear{ml_typeclasses}) described \textit{modular type classes}, offering type class functionality in \textsc{ML}. However, to make them work without canonicity, the authors impose rather strong restrictions. 
 
-Another attempt to design implicits in \textsc{OCaml} was made by White et al. \cite{white} and serves as the main inspiration for this work. In general, the authors follow \textsc{Scala} approach. Their proposal only covers implicit parameters, not implicit conversions, arguing that the latter unnecessarily complicates reasoning about code. Another difference is ambiguity handling: in \textsc{Scala}, implicits are resolved using some precedence rules and ambiguity occurs only in presence of implicit candidates with the same precedence, while in \textsc{OCaml} proposal having several matching implicit candidates in scope leads to ambiguity error.
+Another attempt to design implicits in \textsc{OCaml} was made by White et al. (\citeyear{white}) and serves as the main inspiration for this work. In general, the authors follow \textsc{Scala} approach. Their proposal only covers implicit parameters, not implicit conversions, arguing that the latter unnecessarily complicates reasoning about code. Another difference is ambiguity handling: in \textsc{Scala}, implicits are resolved using some precedence rules and ambiguity occurs only in presence of implicit candidates with the same precedence, while in \textsc{OCaml} proposal having several matching implicit candidates in scope leads to ambiguity error.
 
 Although the work by White et al. gives an informal description and even presents a minimal prototype, it is far from complete and \textsc{OCaml} (as of version 4.12) still lacks implicits. Of course, one of the reasons for this delay is the great scope of this project, as designing and implementing this feature in an already mature language like \textsc{OCaml} requires extensive work, both theoretical and practical. However, the authors point out some particular difficulties they encounter.
 
@@ -68,9 +68,9 @@ Firstly, implementing implicit modules requires unification at the module level,
 
 Secondly, the order of resolving implicit modules is important: resolving them in incorrect order can lead to ambiguity errors. To achieve predictability of type checking in prototype, authors give some weak guarantees on resolve order and fail if compilation succeeded only because of an ordering not ensured by these guarantees. They argue that it is common practice in \textsc{OCaml} for other order-dependent features. We, however, want to explore solutions that improve the completeness of implicit search.
 
-\section{Method}
+\section{Methodology}
 
-Implicit resolving and type inference are closely related in that one cannot be done before the other \cite{white}. This restriction determines the phase in which resolving of implicits must be done: simultaneously with type inference. 
+Implicit resolving and type inference are closely related in that one cannot be done before the other \citep{white}. This restriction determines the phase in which resolving of implicits must be done: simultaneously with type inference. 
 
 We process implicits in their order in the syntax tree. When our algorithm encounters an application involving implicit parameters, these parameters are resolved by searching for all declarations marked as implicit and trying to match them. We obtain the list of possible candidates as the result of this procedure. If it contains only one expression, this expression is inserted as a resolved implicit argument. Otherwise, the error is reported.
 
@@ -80,7 +80,7 @@ The described solution is already designed and implemented. However, it does not
 
 To solve this problem, we extend our algorithm with the following approach. If the algorithm cannot resolve implicit due to ambiguity, it postpones it until more information is available. More precisely, a placeholder variable is inserted in the place of this implicit. We maintain the context of these variables along with types: for each variable, we store the most specific known type. Processing other expressions may reveal more specific types for placeholder variables. Every time this specification happens, we rerun the search algorithm and replace the placeholder with actual expressions if successful. We only report ambiguity if there are still unresolved variables at the end of the algorithm.
 
-\section{Results Anticipated}
+\section{Anticipated Results}
 
 We designed an approach to extend \textsc{1ML} with implicit modules, implemented the core part of this approach, and plan to implement it fully.
 
@@ -90,8 +90,8 @@ In the best-case scenario, our solution will work correctly on all tests where t
 
 \section*{Conclusion}
 
-While extending languages in \textsc{ML} family with ad hoc polymorphism is highly desirable, it remains an open problem. We take a step further in developing a solution for this problem by designing and implementing implicit modules 
+While extending languages in \textsc{ML} family with ad hoc polymorphism is highly desirable, it remains an open problem. We take a step further in developing a solution for this problem by designing and implementing implicit modules for \textsc{1ML} language. 
 
-\bibliographystyle{IEEEtran}
+\bibliographystyle{apacite}
 \bibliography{diploma.bib}
 \end{document}
