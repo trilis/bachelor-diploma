@@ -21,9 +21,9 @@
 % У введения нет номера главы
 \section*{}
 
-Ad-hoc polymorphism proved to be a highly desirable feature for any language. Lack of this feature for languages in the \textsc{ML} family can be considered a significant problem. In this work, we present the solution to this problem within the framework of experimental language \textsc{1ML}. This language offers a minimal and uniform look on \textsc{ML} modules, uniting them with the core language. We extend \textsc{1ML} with implicit modules, offering \textsc{Scala}-like ad-hoc polymorphism. We compare our approach with a recent proposal of modular implicits for \textsc{OCaml} and claim to improve type checking completeness, using minimality and certain design choices of \textsc{1ML}.
+Ad hoc polymorphism proved to be a highly desirable feature for any language. Lack of this feature for languages in the \textsc{ML} family can be considered a significant problem. In this work, we present the solution to this problem within the framework of experimental language \textsc{1ML}. This language offers a minimal and uniform look on \textsc{ML} modules, uniting them with the core language. We extend \textsc{1ML} with implicit modules, offering \textsc{Scala}-like ad hoc polymorphism. We compare our approach with a recent proposal of modular implicits for \textsc{OCaml} and claim to improve type checking completeness, using minimality and certain design choices of \textsc{1ML}.
 
-\textit{Keywords}: implicit parameters, implicit modules, \textsc{ML} modules, type classes, ad-hoc polymorphism, \textsc{1ML}.
+\textit{Keywords}: implicit parameters, implicit modules, \textsc{ML} modules, type classes, ad hoc polymorphism, \textsc{1ML}.
 
 \section{Introduction}
 
@@ -84,7 +84,7 @@ To solve this problem, we extend our algorithm with the following approach. If t
 
 We designed an approach to extend \textsc{1ML} with implicit modules, implemented the core part of this approach, and plan to implement it fully.
 
-One of our goals was to evaluate our approach by comparing the expressiveness of our solution with the solution of White et al. To do so, we plan to collect the test suite, consisting of various \textsc{1ML} sources using implicits along with corresponding \textsc{OCaml} sources. We will base this test suite on examples from the paper by White et al. and tests from their prototype. Also, we will use examples from the literature regarding \textsc{Scala} and implementations of traditional functional data structures, such as monads. Note that translation of these tests poses a particular challenge as some of the language features, such as ADTs and some recursion forms, are absent from \textsc{1ML} and may not be trivially expressable. 
+One of our goals is to evaluate our approach by comparing the expressiveness of our solution with the solution of White et al. To do so, we plan to collect the test suite, consisting of various \textsc{1ML} sources using implicits along with corresponding \textsc{OCaml} sources. We will base this test suite on examples from the paper by White et al. and tests from their prototype. Also, we will use examples from the literature regarding \textsc{Scala} and implementations of traditional functional data structures, such as monads. Note that translation of these tests poses a particular challenge as some of the language features, such as ADTs and some recursion forms, are absent from \textsc{1ML} and may not be trivially expressable. 
 
 In the best-case scenario, our solution will work correctly on all tests where the \textsc{OCaml} solution works, excluding cases in which translation of tests to \textsc{1ML} is impossible without a significant amount of work. Additionally, we can reasonably expect that our approach will work on some tests that \textsc{OCaml} does not support, such as ordering-dependent cases. Our implementation also supports \textit{implicit functors}, which the authors of the \textsc{OCaml} solution mentioned as a possible area of future work.
 
@@ -94,7 +94,7 @@ While extending languages in the \textsc{ML} family with ad hoc polymorphism is 
 
 We offer the solution that is more complete than solutions for \textsc{OCaml}. Because of the nature of \textsc{1ML}, our solution also does not require unification at the module level, which prevents integrating the \textsc{OCaml} solution into the main language. From another point of view, our work contributes to researching the capabilities of \textsc{1ML} and improving its features. Besides implicit modules, we also extend \textsc{1ML} with several minor language features as a side effect of the test and comparison process. 
 
-Because \textsc{1ML} can be viewed as a user-friendly syntax for \textsc{System F\textsubscript{$\omega$}}, our work can also lead to expanding \textsc{System F\textsubscript{$\omega$}} with term inference, which can be interesting as this system serves as the theoretical foundation for several programming languages. This problem is much more complicated than this work's scope, but our work can serve as a first step to solve it.
+Since \textsc{1ML} can be viewed as a user-friendly syntax for \textsc{System F\textsubscript{$\omega$}}, our work can also lead to expanding \textsc{System F\textsubscript{$\omega$}} with term inference, which can be interesting as this system serves as the theoretical foundation for several programming languages. This problem is much more complicated than this work's scope, but our work can serve as a first step to solve it.
 
 \bibliographystyle{apacite}
 \bibliography{diploma.bib}
