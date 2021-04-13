@@ -17,6 +17,7 @@
 \usepackage{graphicx}
 \usepackage{listings}
 \usepackage{xpatch}
+\newcommand{\commentfont}{\ttfamily}
 \lstdefinestyle{mycode}{
   belowcaptionskip=1\baselineskip,
   breaklines=true,
@@ -29,6 +30,9 @@
   numbers=left,
   numbersep=5pt,
   numberstyle=\tiny\color{gray},
+  escapeinside=§§,
+  escapebegin=\begin{russian}\commentfont,
+  escapeend=\end{russian},
 }
 \lstset{escapechar=@,style=mycode}
 
@@ -56,6 +60,7 @@
 \begin{itemize}
   \item ML, OCaml, SML, F\#, ...
   \item Функциональные языки с мощным выводом типов
+  \item Продвинутая система модулей, основанная на теории зависимых типов \footcite{dependent_types}
   \item Активно используется в разработке и исследовании языков программирования
   \item А также в верификации, финансах, веб-разработке и других областях
   \item Отсутствует ad hoc полиформизм:
@@ -66,17 +71,26 @@
 \end{itemize}
 \end{frame}
 
-\begin{frame}\frametitle{Введение. Модули в ML}
+\lstset{language=caml}
+\begin{frame}[fragile]\frametitle{Введение. Модули в ML}
 \begin{itemize}
-  \item Продвинутая система модулей, основанная на теории зависимых типов \footcite{dependent_types}
   \item Язык разделён на два слоя: основной и модульный
-  \item Модульный язык более мощный, но требует 
+  \item Модульный язык более мощный, но требует избыточности и излишней явности деклараций
+  \item Слои плохо интегрируются между собой: нельзя динамически выбрать модуль
+  \item Нельзя: \begin{lstlisting}
+  module Table = if size > threshold then HashMap else TreeMap
+  \end{lstlisting}
+  \item Можно: \begin{lstlisting}
+  module Table = (val (if size > threshold then (module HashMap : MAP) else (module TreeMap : MAP))) : MAP)
+  \end{lstlisting}
+  \item В некоторых случаях такая интеграция невозможна
 \end{itemize}
 \end{frame}
 
 \begin{frame}\frametitle{Введение. 1ML}
 \begin{itemize}
   \item Было показано \footcite{fing}, что модули могут быть выражены и без использования теории зависимых типов
+  \item А именно, что модули можно полностью выразить в System F\textsubscript{$\omega$}
   \item В результате этих исследований был создан экспериментальный диалект 1ML \footcite{1ml}
 \end{itemize}
 \end{frame}
@@ -109,7 +123,7 @@ implicit object IntShowable extends Showable [Int] {
   def show (x: Int) = x.toString
 }
 
-def show [T](x : T)(implicit s: Showable [T]): String = {
+def show[T](x : T)(implicit s: Showable [T]): String = {
   s.show(x)
 }
 
@@ -119,9 +133,14 @@ show(7)
 Впервые в Scala\footcite{implicits}
 \end{frame}
 
-\begin{frame}\frametitle{Обзор литературы. Модулярные классы типов}
+\begin{frame}\frametitle{Обзор литературы. Модульные классы типов}
 \begin{itemize}
-  \item 
+  \item Попытка применить классы типов в ML\footcite{ml_typeclasses}
+  \item Каноничность невозможна в модульном языке
+  \item Поэтому решение вводит ряд серьёзных ограничений
+  \begin{itemize}
+    \item
+  \end{itemize}
 \end{itemize}
 \end{frame}
 
@@ -156,6 +175,12 @@ show [1;2;3] (* show {Show_list (Show_int)} [1;2;3] *)
 \end{lstlisting}
 \end{frame}
 
+\begin{frame}\frametitle{Мотивация}
+\begin{itemize}
+  \item 
+\end{itemize}
+\end{frame}
+
 \begin{frame}\frametitle{Цель и задачи}
 Цель:
 \begin{itemize}
@@ -165,40 +190,138 @@ show [1;2;3] (* show {Show_list (Show_int)} [1;2;3] *)
 \begin{itemize}
   \item Реализация неявных модулей, повторяющих функциональность решения для OCaml
   \item Расширение решения новой функциональностью
-  \item Тестирование и сравнение с решением для OCaml
+  \item Тестирование и сравнение с неявными модулями для OCaml
 \end{itemize}
 \end{frame}
 
 \begin{frame}\frametitle{Общая схема}
-
+  
 \end{frame}
 
 \begin{frame}\frametitle{Поиск модулей}
-
+\begin{itemize}
+  \item Результат~--- "успех", "нет кандидатов", "неоднозначность", "не завершается"
+\end{itemize}
 \end{frame}
 
 \begin{frame}\frametitle{Генерализация типов}
 
 \end{frame}
 
-\begin{frame}\frametitle{Проверка завершаемости}
+\lstset{language=caml}
+\begin{frame}[fragile]\frametitle{Проверка завершаемости}
+\begin{lstlisting}
+implicit module Show_it {S : Show} = struct
+  type t = S.t
+  let show = S.show
+end
+\end{lstlisting}
 
 \end{frame}
 
-\begin{frame}\frametitle{Локальные неявные модули}
-
+\lstset{language=caml}
+\begin{frame}[fragile]\frametitle{Локальные неявные модули}
+\begin{lstlisting}
+let f = show 5 ^ " " ^
+  (let implicit module Show_float = struct
+      type t = float
+      let show x = string_of_float x
+   end in show 3.14)
+\end{lstlisting}
+\begin{itemize}
+\item Так как разрешение неявных переменных отложено, к моменту разрешения некоторые модули могут выйти из контекста
+\item Храним дерево из неявных модулей и побочной информации
+\item Каждая неявная переменная сопоставляется с вершиной в дереве, может использовать модули на пути от этой вершины до корня
+\end{itemize}
 \end{frame}
 
-\begin{frame}\frametitle{Порядок разрешения неявных модулей}
 
+\begin{frame}\frametitle{Порядок разрешения. Мотивация}
+\begin{itemize}
+  \item
+\end{itemize}
 \end{frame}
 
-\begin{frame}\frametitle{Неявные функторы}
+\lstset{language=caml}
+\begin{frame}[fragile]\frametitle{Порядок разрешения. Пример}
+\begin{lstlisting}
+module type Num = sig
+  type t and u and res
+  val ( + ) : t -> u -> res
+end;;
 
+let ( + ) {N : Num} = N.( + );;
+
+implicit module Float_Float = struct
+  type t = float and u = float and res = float
+  let ( + ) = ( +. )
+end;;
+implicit module Int_Float = struct
+  type t = int and u = float and res = float
+  let (+) l r = (float_of_int l) +. r
+end;;
+
+(* Int_Int и Float_Int §пропущены для краткости§ *)
+
+print_float (1 + 1.1 + 2.5);; (* неоднозначность! *)
+\end{lstlisting}
+\end{frame}
+
+
+
+\begin{frame}\frametitle{Порядок разрешения. Постановка задачи}
+\begin{itemize}
+  \item Каждая неявная переменная характеризуется своим типом, зависящим от нуля или нескольких типовых переменных: $T_i(x_{a_{i,1}}, \dots, x_{a_{i,n_i}})$
+  \item Типовые переменные $x_k$ могут повторяться для разных $T_i$
+  \item После поиска модуля по $T_i$ могут быть определены все или некоторые из $x_{a_{i,1}}, \dots, x_{a_{i,n_i}}$
+  \item Если поиск модуля вернул "нет кандидатов", то нужно завершить алгоритм. В случаях же "неоднозначность" или "не завершается" нужно подождать новой информации
+  \item Для $N$ неявных переменных в худшем случае потребуется $\mathcal{O}(N^2)$ запусков поиска 
+\end{itemize}
+\end{frame}
+
+\begin{frame}\frametitle{Порядок разрешения. Алгоритм}
+\begin{enumerate}
+  \item На каждом шаге, если нашлось такое $T_i$, что все $x_{a_{i,j}}$, от которых оно зависит, уникальны~--- обработать его
+  \item Если таких не нашлось, обработать любой $T_i$, который ни разу не был обработан
+  \item Если и таких не нашлось, обработать $T_i$, с момента последней неудачной обработки которого хотя бы одна из $x_{a_{i,j}}$ была определена
+\end{enumerate}
+Сложность: $\mathcal{O}(N + K)$ запусков поиска, где $K = \sum\limits_i n_i$
+Эвристики:
+\begin{itemize}
+  \item В (2) обработать сначала $T_i$ с меньшим числом переменных
+  \item В (3) обработать сначала $T_i$, про который стало известно больше новой информации
+\end{itemize}
+\end{frame}
+
+\lstset{language=caml}
+\begin{frame}[fragile]\frametitle{Неявные функторы}
+Допустим, есть \texttt{Show\_list1} и \texttt{Show\_list2} с одинаковой сигнатурой, нужно выбрать из них явно
+\begin{lstlisting}
+show {Show_list1 (Show_pair (Show_int Show_bool)}
+  [(1, true); (2, false)]
+
+(* §Слишком длинно. В OCaml можно только так§ *)
+
+show {Show_list1} [(1, true); (2, false)]
+
+(* §В 1ML можно поддержать такое§ *)
+\end{lstlisting}
+Это достигнуто за счёт того, что в 1ML различие между функциями и функторами существенно меньше
 \end{frame}
 
 \begin{frame}\frametitle{Тестирование и сравнение}
-
+\begin{itemize}
+  \item Нет существующей кодовой базы ни на OCaml, ни на 1ML
+  \item Нужно собрать собственный набор тестов
+  \item Источники:
+  \begin{itemize}
+    \item Набор тестов для решения на OCaml и примеры из статей
+    \item Тесты на порядок разрешения и на неявные функторы
+    \item Тесты, аналогичные коду на других языках с неявными параметрами (Scala)
+    \item Реализация стандартных функциональных структур (например, монады)
+    \item Тесты, написанные в логической парадигме
+  \end{itemize}
+\end{itemize}
 \end{frame}
 
 \begin{frame}\frametitle{Результаты}
