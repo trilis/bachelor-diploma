@@ -59,6 +59,7 @@
 \usepackage{fontspec}
 \setmainfont[Mapping=tex-text]{CMU Serif}
 
+\usepackage{indentfirst}
 %% В XeLaTex заменой известного пакета babel является пакет polyglossia.
 %% Теперь у нас будут переносы слов
 \usepackage{polyglossia}
@@ -66,14 +67,12 @@
 
 
 %% Отступ в первом абзаце
-\usepackage{indentfirst}
 %% Гиперссылки
 \usepackage[colorlinks=true,urlcolor=black,linkcolor=black,filecolor=black,citecolor=black]{hyperref}
 
 %% Включение графических файлов
 %% we don't need to load graphicx since it will be loaded by xunicode (which is loaded by fontspec) 
 \usepackage[titletoc]{appendix}
-\usepackage{graphicx}
 
 %% Эта команда добавляет отчеркнутое место для подписи после имени
 %% Аргументы: имя и пояснение под чертой (например, слово "подпись")
@@ -130,11 +129,16 @@
     \ifthenelse{\equal{#1}{ru}}
         {
         \presetkeys[#1]{mytitle}{
-          university = {Федеральное государственное бюджетное\\образовательное учреждение высшего образования\\«Санкт-Петербургский национальный исследовательский\\Академический университет Российской академии наук»},
-          faculty = {Центр высшего образования},
+          university = {Федеральное государственное автономное образовательное учреждение \\высшего образования\\«Национальный исследовательский университет «Высшая школа экономики»},
+          faculty = {Факультет Санкт-Петербургская школа физико-математических и компьютерных наук\\Департамент информатики},
+          chair = {Основная профессиональная образовательная программа\\«Прикладная математика и информатика»},
           city = {Санкт-Петербург},
           year = {\the\year},
-          type = {diploma}
+          type = {diploma},
+          chairHead = {Омельченко А. В.},
+          chairHeadPosition = {д. ф.-м. н., профессор},
+          reviewer = {Брагилевский В. Н.},
+          reviewerPosition = {j}
         }{}
         }
         {}
@@ -158,7 +162,7 @@
     \fancyhf{}  % clear all header and footer fields
     \renewcommand{\headrulewidth}{0pt}  % remove head ruler
     %% В верхнем колонтитуле будет университет и кафедра
-    \chead{\large \my@title@university@ru \\ \my@title@faculty@ru \\ \vskip 1em{\large \my@title@chair@ru \\}}
+    \chead{\large \my@title@university@ru \\ \vskip 1em{\my@title@faculty@ru \\ \vskip 1em{\large \my@title@chair@ru \\}}}
     %% В нижнем колонтитуле город и год
     \cfoot{\large\parbox[b]{\textwidth}{\centering \my@title@city@ru\\ \my@title@year@ru}}
 }
@@ -168,7 +172,7 @@
 \newgeometry{top=20mm,bottom=20mm,left=20mm,right=15mm,nohead,includeheadfoot}
 \thispagestyle{titleru}
 \begin{center}
-    \vspace*{0.25\textheight}
+    \vspace*{0.3\textheight}
     {\Large\my@title@author@ru}
     
     \vskip 2em

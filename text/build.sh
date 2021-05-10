@@ -1,5 +1,5 @@
-xelatex diploma.tex
+xelatex --shell-escape diploma.tex
 bibtex diploma.aux
-xelatex diploma.tex > /dev/null
-xelatex diploma.tex > /dev/null
+xelatex --shell-escape diploma.tex > /dev/null
+xelatex --shell-escape diploma.tex > /dev/null
 xdg-open diploma.pdf
