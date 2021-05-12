@@ -1,11 +1,28 @@
 \documentclass[../diploma.tex]{subfiles}
 \begin{document}\label{sec:2}
 
-\subsection{2.1}
+\subsection{Проверка завершаемости}
+
+Легко заметить, что описанный алгоритм поиска модуля может не завершаться. Рассмотрим следующий модуль:
+
+\begin{minted}{ocaml}
+implicit Show_id [Delegate: SHOW] = {
+    type t = Delegate.t
+    show = Delegate.show
+}
+\end{minted}
+
+В присутствии такого модуля любая попытка вывести модуль будет бесконечно строить модуль вида \texttt{Show\_id [Show\_id [Show\_id ...]]}. Чтобы гарантировать завершаемость алгоритма, применим классический метод. TODO
+
+\subsection{Генерализация типов}
 
 TODO
 
-\subsection{2.2}
+\subsection{Локальные неявные модули}
+
+TODO
+
+\subsection{Неявные функторы}
 
 TODO
 
