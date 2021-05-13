@@ -59,14 +59,15 @@
 \usepackage{fontspec}
 \setmainfont[Mapping=tex-text]{CMU Serif}
 
+
+%% Отступ в первом абзаце
+\usepackage{indentfirst}
 %% В XeLaTex заменой известного пакета babel является пакет polyglossia.
 %% Теперь у нас будут переносы слов
 \usepackage{polyglossia}
 \setdefaultlanguage{russian}
 
 
-%% Отступ в первом абзаце
-\usepackage{indentfirst}
 %% Гиперссылки
 \usepackage[colorlinks=true,urlcolor=black,linkcolor=black,filecolor=black,citecolor=black]{hyperref}
 
