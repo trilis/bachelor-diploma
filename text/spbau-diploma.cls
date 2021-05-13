@@ -59,7 +59,6 @@
 \usepackage{fontspec}
 \setmainfont[Mapping=tex-text]{CMU Serif}
 
-\usepackage{indentfirst}
 %% В XeLaTex заменой известного пакета babel является пакет polyglossia.
 %% Теперь у нас будут переносы слов
 \usepackage{polyglossia}
@@ -67,6 +66,7 @@
 
 
 %% Отступ в первом абзаце
+\usepackage{indentfirst}
 %% Гиперссылки
 \usepackage[colorlinks=true,urlcolor=black,linkcolor=black,filecolor=black,citecolor=black]{hyperref}
 
@@ -129,16 +129,11 @@
     \ifthenelse{\equal{#1}{ru}}
         {
         \presetkeys[#1]{mytitle}{
-          university = {Федеральное государственное автономное образовательное учреждение \\высшего образования\\«Национальный исследовательский университет «Высшая школа экономики»},
-          faculty = {Факультет Санкт-Петербургская школа физико-математических и компьютерных наук\\Департамент информатики},
-          chair = {Основная профессиональная образовательная программа\\«Прикладная математика и информатика»},
+          university = {«Национальный исследовательский университет\\ «Высшая школа экономики»},
+          faculty = {Факультет Санкт-Петербургская школа физико-математических и компьютерных наук\\Департамент информатики\\Основная образовательная программа\\Прикладная математика и информатика},
           city = {Санкт-Петербург},
           year = {\the\year},
-          type = {diploma},
-          chairHead = {Омельченко А. В.},
-          chairHeadPosition = {д. ф.-м. н., профессор},
-          reviewer = {Брагилевский В. Н.},
-          reviewerPosition = {j}
+          type = {diploma}
         }{}
         }
         {}
@@ -162,7 +157,11 @@
     \fancyhf{}  % clear all header and footer fields
     \renewcommand{\headrulewidth}{0pt}  % remove head ruler
     %% В верхнем колонтитуле будет университет и кафедра
-    \chead{\large \my@title@university@ru \\ \vskip 1em{\my@title@faculty@ru \\ \vskip 1em{\large \my@title@chair@ru \\}}}
+    \chead{
+    {\large Правительство Российской Федерации\\Федеральное государственное автономное образовательное учреждение высшего образования\\}
+    {\large \my@title@university@ru} \\ 
+    \vskip 1em
+    {\large \my@title@faculty@ru \\ \vskip 1em{\large \my@title@chair@ru \\}}}
     %% В нижнем колонтитуле город и год
     \cfoot{\large\parbox[b]{\textwidth}{\centering \my@title@city@ru\\ \my@title@year@ru}}
 }
@@ -172,14 +171,10 @@
 \newgeometry{top=20mm,bottom=20mm,left=20mm,right=15mm,nohead,includeheadfoot}
 \thispagestyle{titleru}
 \begin{center}
-    \vspace*{0.3\textheight}
-    {\Large\my@title@author@ru}
+    \vspace*{0.25\textheight}
     
-    \vskip 2em
-    {\Huge \@title\\}
-    
-    \vskip 1em
-    {\large 
+    \vskip 7em
+    {\Large 
     \ifthenelse{\equal{\my@title@type@ru}{coursework}}
     {Курсовая работа}
     {\ifthenelse{\equal{\my@title@type@ru}{diploma}}
@@ -187,24 +182,28 @@
     {\ifthenelse{\equal{\my@title@type@ru}{master}}
     {Магистерская диссертация}
     {\ifthenelse{\equal{\my@title@type@ru}{bachelor}}
-    {Бакалаврская работа}
+    {ВЫПУСКНАЯ КВАЛИФИКАЦИОННАЯ РАБОТА}
     }}}
     \\}
-    \vskip 2em
-    \ifthenelse{\equal{\my@title@type@ru}{coursework}}
-    {\normalsize \raggedleft 
-    Научный руководитель:\\
-    \my@title@supervisorPosition@ru\ \my@title@supervisor@ru
+    \vskip 0.7em
+    
+    {\Large на тему}
+    
+    \vskip 1em
+    {\Large \@title\\}
+    
+    \vskip 7em
+    
+    {\large \flushleft 
+    Выполнил студент группы БПМ151, 4 курса,\\
+    \my@title@author@ru \sigspace
     }
-    {\normalsize \raggedleft 
-    Допущена к защите.\\
-    Зав. кафедрой:\\
-    \my@title@chairHeadPosition@ru\ \my@title@chairHead@ru\sigspace
+
+    {\large \flushleft 
     Научный руководитель:\\
     \my@title@supervisorPosition@ru\ \my@title@supervisor@ru\sigspace
-    Рецензент:\\
-    \my@title@reviewerPosition@ru\ \my@title@reviewer@ru
     }
+    
 \end{center}
 \end{titlepage}
 }
@@ -273,21 +272,21 @@
 \newcounter{titlepages}
 \setcounter{titlepages}{1}
 \begin{spacing}{1.0}
-\ifthenelse{\isundefined{\my@title@title@ru}}{}{
+% \ifthenelse{\isundefined{\my@title@title@ru}}{}{
   % fancyhdr set height of the top/bottom headers automatically
   % so set them to zero to be sure that he does it 
-  \setlength{\headheight}{0pt}
-  \setlength{\footskip}{0pt}
-  \maketitleru\addtocounter{titlepages}{1}
-}
-\ifthenelse{\isundefined{\my@title@title@en}}{}{
-  % fancyhdr already set height of the top/bottom headers on the previous page (titleru) 
-  % but on this page the headers' height might be different
-  % so set them to zero again in order to make fancyhdr to do it
-  \setlength{\headheight}{0pt}
-  \setlength{\footskip}{0pt}
-  \maketitleen\addtocounter{titlepages}{1}
-}
+%   \setlength{\headheight}{0pt}
+%   \setlength{\footskip}{0pt}
+%   \maketitleru\addtocounter{titlepages}{1}
+% }
+% \ifthenelse{\isundefined{\my@title@title@en}}{}{
+%   % fancyhdr already set height of the top/bottom headers on the previous page (titleru) 
+%   % but on this page the headers' height might be different
+%   % so set them to zero again in order to make fancyhdr to do it
+%   \setlength{\headheight}{0pt}
+%   \setlength{\footskip}{0pt}
+%   \maketitleen\addtocounter{titlepages}{1}
+% }
 \end{spacing}
 \setcounter{page}{\value{titlepages}}
 % restore preamble's geometry

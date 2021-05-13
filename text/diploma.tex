@@ -1,6 +1,7 @@
 % В этом шаблоне используется класс spbau-diploma. Его можно найти и, если требуется, 
 % поправить в файле spbau-diploma.cls
 \documentclass{spbau-diploma}
+\usepackage{pdfpages}
 \usepackage{subfiles}
 \usepackage{listings}
 \usepackage{xcolor}
@@ -18,7 +19,9 @@
     supervisorPosition = {к.\,ф.-м.\,н.},
     supervisor         = {Березун Д.\,А.},
 }
+\includepdf[pages=-]{title.pdf}
 \maketitle
+\setcounter{page}{2}
 \tableofcontents
 
 
