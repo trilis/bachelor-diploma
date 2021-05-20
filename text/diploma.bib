@@ -26,12 +26,11 @@ series = {ICFP 2015}
    publisher={Open Publishing Association},
    author={White, Leo and Bour, Frédéric and Yallop, Jeremy},
    year={2015},
-   month={Dec},
    pages={22–63}
 }
 
 @inproceedings{adhoc,
-author = {Wadler, P. and Blott, S.},
+author = {Wadler, Philip and Blott, Stephen},
 title = {How to Make Ad-Hoc Polymorphism Less Ad Hoc},
 year = {1989},
 isbn = {0897912942},
@@ -172,7 +171,6 @@ series = {HILT '14}
 ﻿@misc{strachey,
   author        = {Strachey, Christopher},
   title         = {Fundamental concepts in programming languages. Lecture notes for International Summer School in Computer Programming},
-  month         = {August},
   year          = {1967},
   location      = {Copenhagen, Denmark}
 }
@@ -189,7 +187,6 @@ series = {HILT '14}
   author = {Gerhard Schneider},
   school = {Saarland University},
   year = {2000},
-  month = {jun},
 }
 
 @inproceedings{packaged_ocaml,
@@ -212,7 +209,6 @@ issn = {0164-0925},
 url = {https://doi.org/10.1145/169701.169696},
 doi = {10.1145/169701.169696},
 journal = {ACM Trans. Program. Lang. Syst.},
-month = {apr},
 pages = {211–252},
 numpages = {42}
 }
@@ -224,4 +220,54 @@ numpages = {42}
   pages={278--293},
   year={2008},
   organization={Springer}
+}
+
+@misc{discuss,
+  author={White, Leo},
+  title={Re: Modular Implicits. Online forum comment},
+  url={https://discuss.ocaml.org/t/modular-implicits/144/18},
+  year={2018},
+}
+
+@phdthesis{dreyer_thesis,
+    title    = {Understanding and Evolving the ML Module System},
+    school   = {Carnegie Mellon University},
+    author   = {Dreyer, Derek},
+    year     = {2005},
+}
+
+
+@inproceedings{aliceml,
+author = {Rossberg, Andreas},
+title = {The Missing Link: Dynamic Components for ML},
+year = {2006},
+isbn = {1595933093},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/1159803.1159816},
+doi = {10.1145/1159803.1159816},
+abstract = {Despite its powerful module system, ML has not yet evolved for the modern world of dynamic and open modular programming, to which more primitive languages have adapted better so far. We present the design and semantics of a simple yet expressive firstclass component system for ML. It provides dynamic linking in a type-safe and type-flexible manner, and allows selective execution in sandboxes. The system is defined solely by reduction to higherorder modules plus an extension with simple module-level dynamics, which we call packages. To represent components outside processes we employ generic pickling. We give a module calculus formalising the semantics of packages and pickling.},
+booktitle = {Proceedings of the Eleventh ACM SIGPLAN International Conference on Functional Programming},
+pages = {99–110},
+numpages = {12},
+keywords = {modules, pickling, dynamic linking, components, dynamic typing, separate compilation, distributed programming, units},
+location = {Portland, Oregon, USA},
+series = {ICFP '06}
+}
+
+@inproceedings{canonical_structures,
+author = {Mahboubi, Assia and Tassi, Enrico},
+title = {Canonical Structures for the Working Coq User},
+year = {2013},
+isbn = {9783642396335},
+publisher = {Springer-Verlag},
+address = {Berlin, Heidelberg},
+url = {https://doi.org/10.1007/978-3-642-39634-2_5},
+doi = {10.1007/978-3-642-39634-2_5},
+abstract = {This paper provides a gentle introduction to the art of programming type inference with the mechanism of Canonical Structures. Programmable type inference has been one of the key ingredients for the successful formalization of the Odd Order Theorem using the Coq proof assistant. The paper concludes comparing the language of Canonical Structures to the one of Type Classes and Unification Hints.},
+booktitle = {Proceedings of the 4th International Conference on Interactive Theorem Proving},
+pages = {19–34},
+numpages = {16},
+location = {Rennes, France},
+series = {ITP'13}
 }
